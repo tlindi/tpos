@@ -8,9 +8,11 @@ from pydantic import BaseModel
 class CreateTposData(BaseModel):
     name: str
     currency: str
-    tip_options: str = Query(None)
-    tip_wallet: str = Query(None)
-
+    tip_options: Optional[str]
+    tip_wallet: Optional[str]
+    withdrawlimit: Optional[str]
+    withdrawpin: Optional[str]
+    withdrawamt: Optional[str]
 
 class TPoS(BaseModel):
     id: str
@@ -19,6 +21,9 @@ class TPoS(BaseModel):
     currency: str
     tip_options: Optional[str]
     tip_wallet: Optional[str]
+    withdrawlimit: Optional[str]
+    withdrawpin: Optional[str]
+    withdrawamt: Optional[str]
 
     @classmethod
     def from_row(cls, row: Row) -> "TPoS":

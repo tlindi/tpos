@@ -117,7 +117,16 @@
           :options="currencyOptions"
           label="Currency *"
         ></q-select>
+        <div class="row">
+          <div class="col">
+            <q-checkbox v-model="advanced.tips" label="Enable tips"></q-checkbox>
+          </div>
+          <div class="col">
+            <q-checkbox v-model="advanced.otc" label="Enable selling bitcoin"></q-checkbox>
+          </div>
+        </div>
         <q-select
+          v-if="advanced.tips"
           filled
           dense
           emit-value
@@ -126,6 +135,7 @@
           label="Tip Wallet"
         ></q-select>
         <q-select
+          v-if="advanced.tips"
           filled
           multiple
           dense
@@ -145,6 +155,23 @@
             (round amount to a value)
           </template>
         </q-select>
+        <q-input
+          v-if="advanced.otc"
+          filled
+          dense
+          v-model.number="formDialog.data.withdrawlimit"
+          type="number"
+          label="Withdraw daily limit"
+        ></q-input>
+        <q-input
+          v-if="advanced.otc"
+          filled
+          dense
+          v-model.number="formDialog.data.withdrawpin"
+          type="number"
+          max="1000000"
+          label="Withdraw pin"
+        ></q-input>
         <div class="row q-mt-lg">
           <q-btn
             unelevated
@@ -382,7 +409,13 @@
         },
         formDialog: {
           show: false,
-          data: {}
+          data: {
+            withdrawpin: 878787
+          }
+        },
+        advanced: {
+          tips: false,
+          otc: false,
         }
       }
     },
