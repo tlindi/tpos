@@ -6,8 +6,9 @@ from pydantic import BaseModel
 
 
 class CreateTposData(BaseModel):
-    name: str
-    currency: str
+    wallet: Optional[str]
+    name: Optional[str]
+    currency: Optional[str]
     tip_options: Optional[str]
     tip_wallet: Optional[str]
     withdrawlimit: Optional[str]
@@ -29,6 +30,15 @@ class TPoS(BaseModel):
     def from_row(cls, row: Row) -> "TPoS":
         return cls(**dict(row))
 
+class TPoSClean(BaseModel):
+    id: str
+    name: str
+    currency: str
+    tip_options: Optional[str]
 
+    @classmethod
+    def from_row(cls, row: Row) -> "TPoSClean":
+        return cls(**dict(row))
+    
 class PayLnurlWData(BaseModel):
     lnurl: str
