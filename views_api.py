@@ -199,16 +199,15 @@ async def api_tpos_check_invoice(tpos_id: str, payment_hash: str):
     return status
 
 
-@tpos_ext.post("/api/v1/tposs/atm/{tpos_id}", status_code=HTTPStatus.CREATED)
-async def api_tpos_atm_pin_check(
-    tpos_id: str, atmpin: int
-):
+@tpos_ext.get("/api/v1/tposs/atm/{tpos_id}/{atmpin}", status_code=HTTPStatus.CREATED)
+async def api_tpos_atm_pin_check(tpos_id: str, atmpin: int):
     tpos = await get_tpos(tpos_id)
+    logger.debug(tpos)
     if not tpos:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="TPoS does not exist."
         )
-    if tpos.withdrawpin is not atmpin:
+    if int(tpos.withdrawpin) != int(atmpin):
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="Wrong pin."
         )

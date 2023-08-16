@@ -43,22 +43,22 @@ async def m004_addwithdrawlimit(db):
     """
     await db.execute(
         """
-        ALTER TABLE tpos.tposs ADD withdrawlimit INTEGER DEFAULT 0;
+        ALTER TABLE tpos.tposs ADD COLUMN withdrawlimit INTEGER DEFAULT 0;
     """
     )
     await db.execute(
         """
-        ALTER TABLE tpos.tposs ADD withdrawpin INTEGER DEFAULT 878787;
+        ALTER TABLE tpos.tposs ADD COLUMN withdrawpin INTEGER DEFAULT 878787;
     """
     )
     await db.execute(
         """
-        ALTER TABLE tpos.tposs ADD withdrawamt INTEGER DEFAULT 0;
+        ALTER TABLE tpos.tposs ADD COLUMN withdrawamt INTEGER DEFAULT 0;
     """
     )
     await db.execute(
         f"""
-        ALTER TABLE tpos.tposs ADD withdrawtime TIME DEFAULT {db.timestamp_now};
+        ALTER TABLE tpos.tposs ADD COLUMN withdrawtime TIMESTAMP;
     """
     )
 

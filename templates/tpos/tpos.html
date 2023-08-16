@@ -485,25 +485,22 @@
         }
       },
       atmSubmit() {
-        axios
-          .post(
-            '/tpos/api/v1/tposs/', null, {
-            params: {
-              amount: this.sat,
-              memo: this.amountFormatted,
-              tipAmount: this.tipAmountSat
+          LNbits.api
+          .request(
+            'GET',
+            `/tpos/api/v1/tposs/atm/` + this.tposId + `/` + this.atmPin)
+          .then(function (res) {
+            if (res.data.paid) {
+              clearInterval(dialog.paymentChecker)
+              dialog.dismissMsg()
+              dialog.show = false
+              self.complete.show = true
             }
           })
-                .then(function (res) {
-                  if (res.data.paid) {
-                    clearInterval(dialog.paymentChecker)
-                    dialog.dismissMsg()
-                    dialog.show = false
-
-                    self.complete.show = true
-                  }
-                })
-        this.atmPin
+            .catch(function (error) {
+            LNbits.utils.notifyApiError(error)
+          })
+        console.log(this.atmPin)
       },
       setRounding() {
         this.rounding = true

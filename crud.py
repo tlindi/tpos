@@ -32,12 +32,7 @@ async def create_tpos(wallet_id: str, data: CreateTposData) -> TPoS:
 
 async def start_lnurlcharge(tpos_id: str):
     tpos = await get_tpos(tpos_id)
-    currentdatetime = await db.execute(
-        f"""
-            {db.timestamp_now};
-        """
-    )
-    if currentdatetime - tpos.withdrawtime < 10000:
+    if db.timestamp_now - tpos.withdrawtime < 10000:
         assert tpos, "TPoS could not be retreived"
     token = urlsafe_short_hash()
     await db.execute(
