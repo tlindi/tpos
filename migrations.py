@@ -1,3 +1,5 @@
+import datetime
+
 async def m001_initial(db):
     """
     Initial tposs table.
@@ -52,5 +54,25 @@ async def m004_addwithdrawlimit(db):
     await db.execute(
         """
         ALTER TABLE tpos.tposs ADD withdrawamt INTEGER DEFAULT 0;
+    """
+    )
+    await db.execute(
+        f"""
+        ALTER TABLE tpos.tposs ADD withdrawtime TIME DEFAULT {db.timestamp_now};
+    """
+    )
+
+async def m005_initial(db):
+    """
+    Initial withdaws table.
+    """
+    await db.execute(
+        f"""
+        CREATE TABLE tpos.withdaws (
+            id TEXT PRIMARY KEY,
+            tpos_id TEXT NOT NULL,
+            amount int NOT NULL,
+            claimed BOOL NOT NULL
+        );
     """
     )

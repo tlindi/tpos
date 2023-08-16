@@ -14,7 +14,7 @@ from lnbits.decorators import WalletTypeInfo, get_key_type, require_admin_key
 from lnbits.settings import settings
 
 from . import tpos_ext
-from .crud import create_tpos, update_tpos,  delete_tpos, get_tpos, get_tposs
+from .crud import create_tpos, update_tpos,  delete_tpos, get_tpos, get_tposs, start_lnurlcharge
 from .models import CreateTposData, PayLnurlWData
 
 
@@ -197,3 +197,20 @@ async def api_tpos_check_invoice(tpos_id: str, payment_hash: str):
         logger.error(exc)
         return {"paid": False}
     return status
+
+
+@tpos_ext.post("/api/v1/tposs/atm/{tpos_id}", status_code=HTTPStatus.CREATED)
+async def api_tpos_atm_pin_check(
+    tpos_id: str, atmpin: int
+):
+    tpos = await get_tpos(tpos_id)
+    if not tpos:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="TPoS does not exist."
+        )
+    if tpos.withdrawpin is not atmpin:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="Wrong pin."
+        )
+    token = await start_lnurlcharge(tpos_id)
+    return token

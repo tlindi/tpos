@@ -36,6 +36,7 @@ async def tpos(request: Request, tpos_id):
         {
             "request": request,
             "tpos": tpos,
+            "withdrawamtposs": tpos.withdrawamtposs,
             "web_manifest": f"/tpos/manifest/{tpos_id}.webmanifest",
         },
     )
