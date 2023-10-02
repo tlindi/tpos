@@ -14,7 +14,14 @@ from lnbits.decorators import WalletTypeInfo, get_key_type, require_admin_key
 from lnbits.settings import settings
 
 from . import tpos_ext
-from .crud import create_tpos, update_tpos,  delete_tpos, get_tpos, get_tposs, start_lnurlcharge
+from .crud import (
+    create_tpos,
+    update_tpos,
+    delete_tpos,
+    get_tpos,
+    get_tposs,
+    start_lnurlcharge,
+)
 from .models import CreateTposData, PayLnurlWData
 
 
@@ -37,12 +44,14 @@ async def api_tpos_create(
     tpos = await create_tpos(wallet_id=wallet.wallet.id, data=data)
     return tpos.dict()
 
+
 @tpos_ext.post("/api/v1/tposs/{tpos_id}", status_code=HTTPStatus.CREATED)
 async def api_tpos_create(
     tpos_id: str, data: CreateTposData, wallet: WalletTypeInfo = Depends(get_key_type)
 ):
     tpos = await update_tpos(tpos_id=tpos_id, data=data)
     return tpos.dict()
+
 
 @tpos_ext.delete("/api/v1/tposs/{tpos_id}")
 async def api_tpos_delete(
@@ -66,7 +75,6 @@ async def api_tpos_delete(
 async def api_tpos_create_invoice(
     tpos_id: str, amount: int = Query(..., ge=1), memo: str = "", tipAmount: int = 0
 ) -> dict:
-
     tpos = await get_tpos(tpos_id)
 
     if not tpos:
@@ -207,9 +215,7 @@ async def api_tpos_atm_pin_check(tpos_id: str, atmpin: int):
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="TPoS does not exist."
         )
-    if int(tpos.withdrawpin) != int(atmpin):
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="Wrong pin."
-        )
+    if tpos.withdrawpin and int(tpos.withdrawpin) != int(atmpin):
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Wrong pin.")
     token = await start_lnurlcharge(tpos_id)
     return token
