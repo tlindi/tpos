@@ -5,6 +5,7 @@ from fastapi import Query
 from pydantic import BaseModel
 from loguru import logger
 
+
 class CreateTposData(BaseModel):
     wallet: Optional[str]
     name: Optional[str]
@@ -14,6 +15,7 @@ class CreateTposData(BaseModel):
     withdrawlimit: Optional[int]
     withdrawpin: Optional[int]
     withdrawamt: Optional[int]
+
 
 class TPoS(BaseModel):
     id: str
@@ -25,6 +27,7 @@ class TPoS(BaseModel):
     withdrawlimit: Optional[int]
     withdrawpin: Optional[int]
     withdrawamt: Optional[int]
+    withdrawtime: Optional[int]
 
     @classmethod
     def from_row(cls, row: Row) -> "TPoS":
@@ -32,7 +35,9 @@ class TPoS(BaseModel):
 
     @property
     def withdrawamtposs(self) -> int:
+        assert self.withdrawlimit is not None and self.withdrawamt is not None
         return self.withdrawlimit - self.withdrawamt
+
 
 class TPoSClean(BaseModel):
     id: str
@@ -41,14 +46,17 @@ class TPoSClean(BaseModel):
     tip_options: Optional[str]
     withdrawlimit: Optional[int]
     withdrawamt: Optional[int]
+    withdrawtime: Optional[int]
 
     @classmethod
     def from_row(cls, row: Row) -> "TPoSClean":
         return cls(**dict(row))
-    
+
     @property
     def withdrawamtposs(self) -> int:
+        assert self.withdrawlimit is not None and self.withdrawamt is not None
         return self.withdrawlimit - self.withdrawamt
+
 
 class LNURLCharge(BaseModel):
     id: str
@@ -59,6 +67,7 @@ class LNURLCharge(BaseModel):
     @classmethod
     def from_row(cls, row: Row) -> "LNURLCharge":
         return cls(**dict(row))
-    
+
+
 class PayLnurlWData(BaseModel):
     lnurl: str
