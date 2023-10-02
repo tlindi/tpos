@@ -1,5 +1,6 @@
 import datetime
 
+
 async def m001_initial(db):
     """
     Initial tposs table.
@@ -37,6 +38,7 @@ async def m003_addtip_options(db):
     """
     )
 
+
 async def m004_addwithdrawlimit(db):
     """
     Adds withdrawlimit and withdrawamt to tposs table
@@ -62,13 +64,14 @@ async def m004_addwithdrawlimit(db):
     """
     )
 
+
 async def m005_initial(db):
     """
     Initial withdaws table.
     """
     await db.execute(
         f"""
-        CREATE TABLE tpos.withdaws (
+        CREATE TABLE tpos.withdraws (
             id TEXT PRIMARY KEY,
             tpos_id TEXT NOT NULL,
             amount int NOT NULL,
