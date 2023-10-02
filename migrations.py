@@ -60,7 +60,7 @@ async def m004_addwithdrawlimit(db):
     )
     await db.execute(
         f"""
-        ALTER TABLE tpos.tposs ADD COLUMN withdrawtime TIMESTAMP;
+        ALTER TABLE tpos.tposs ADD COLUMN withdrawtime TIMESTAMP NOT NULL DEFAULT {db.timestamp_now};
     """
     )
 
