@@ -1,6 +1,8 @@
 from http import HTTPStatus
 
 from lnbits.core.views.api import pay_invoice
+from fastapi import Request, Query
+
 
 from . import tpos_ext
 from .crud import (
@@ -9,11 +11,8 @@ from .crud import (
     update_lnurlcharge,
 )
 
-async def lnurl_params(
-    request: Request,
-    lnurlcharge_id: str,
-    amount: str
-):
+
+async def lnurl_params(request: Request, lnurlcharge_id: str, amount: str):
     lnurlcharge = await get_lnurlcharge(lnurlcharge_id)
     if not lnurlcharge:
         return {
@@ -34,8 +33,8 @@ async def lnurl_params(
     await update_lnurlcharge(amount=int(amount), lnurlcharge_id=lnurlcharge_id)
     return {
         "tag": "withdrawRequest",
-        "callback": request.url_for(
-            "tposlnurlcharge.callback", paymentid=lnurlcharge_id
+        "callback": str(
+            request.url_for("tposlnurlcharge.callback", paymentid=lnurlcharge_id)
         ),
         "k1": p,
         "minWithdrawable": amount,
@@ -75,7 +74,7 @@ async def lnurl_callback(
         return {
             "status": "ERROR",
             "reason": f"Amount requested {lnurlcharge.amount} is too high, try again with a smaller amount.",
-        }   
+        }
     try:
         await update_lnurlcharge(claimed=True, lnurlcharge_id=k1)
         await update_tpos(withdrawamt=True, tpos_id=lnurlcharge.tpos_id, time=True)
